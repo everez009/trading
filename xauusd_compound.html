@@ -193,6 +193,16 @@
             font-weight: 600;
         }
 
+        .compounding-info {
+            background: #e7f3ff;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
         @media (max-width: 768px) {
             .control-group {
                 grid-template-columns: 1fr;
@@ -265,6 +275,11 @@
                     <input type="number" id="targetProfit" value="100000" min="1000">
                 </div>
             </div>
+            <div class="compounding-info">
+                <strong>Compounding Explanation:</strong> This percentage determines how much of your weekly profits get reinvested to increase your account balance. 
+                50% means half of your profits are reinvested for compound growth, while the other half can be withdrawn. 
+                100% = full reinvestment, 0% = no compounding (fixed balance).
+            </div>
             <button class="calculate-btn" onclick="calculateCompounding()">Calculate Compounding Table</button>
         </div>
 
@@ -275,8 +290,8 @@
                     <div class="value" id="finalBalance">$0</div>
                 </div>
                 <div class="card">
-                    <h3>Total Profit</h3>
-                    <div class="value" id="totalProfit">$0</div>
+                    <h3>Total Withdrawn</h3>
+                    <div class="value" id="totalWithdrawn">$0</div>
                 </div>
                 <div class="card">
                     <h3>Time to Target</h3>
@@ -302,8 +317,9 @@
                             <th>Wins</th>
                             <th>Losses</th>
                             <th>Weekly P&L</th>
+                            <th>Reinvested</th>
+                            <th>Withdrawn</th>
                             <th>Ending Balance</th>
-                            <th>Cumulative Profit</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -327,6 +343,7 @@
             let currentBalance = startingCapital;
             let currentLotSize = startingLotSize;
             let totalTrades = 0;
+            let totalWithdrawn = 0;
             let targetReached = false;
             let targetWeek = null;
 
@@ -335,7 +352,6 @@
 
             // Gold contract specifications
             const contractSize = 100; // 100 oz per standard lot
-            const avgGoldPrice = 2000; // Approximate gold price
             const pointValue = 1; // $1 per point movement per standard lot
 
             for (let week = 1; week <= 52; week++) {
@@ -346,7 +362,7 @@
                 const wins = Math.round(tradesPerWeek * winRate);
                 const losses = tradesPerWeek - wins;
                 
-                // Calculate risk amount per trade
+                // Calculate risk amount per trade based on current balance
                 const riskAmount = currentBalance * riskPerTrade;
                 
                 // Calculate lot size based on risk (assuming 100 pip stop loss)
@@ -362,18 +378,28 @@
                 const lossPerTrade = riskAmount;
                 
                 weeklyPnL = (wins * profitPerWin) - (losses * lossPerTrade);
-                currentBalance += weeklyPnL;
                 
-                // Apply compounding - reinvest portion of profits
+                // Apply compounding - only compound the profits, not losses
+                let compoundedAmount = 0;
+                let withdrawnAmount = 0;
+                
                 if (weeklyPnL > 0) {
-                    const reinvestAmount = weeklyPnL * compounding;
-                    // Reinvestment affects next week's balance
+                    // Only compound the specified percentage of profits
+                    compoundedAmount = weeklyPnL * compounding;
+                    withdrawnAmount = weeklyPnL * (1 - compounding);
+                    // Only add the compounded portion to balance for next week's calculations
+                    currentBalance += compoundedAmount;
+                    totalWithdrawn += withdrawnAmount;
+                } else {
+                    // For losses, subtract full amount from balance (no compounding)
+                    currentBalance += weeklyPnL;
                 }
                 
                 totalTrades += tradesPerWeek;
                 
-                // Check if target is reached
-                if (!targetReached && (currentBalance - startingCapital) >= targetProfit) {
+                // Check if target is reached (based on total value: balance + withdrawn)
+                const totalValue = currentBalance + totalWithdrawn;
+                if (!targetReached && (totalValue - startingCapital) >= targetProfit) {
                     targetReached = true;
                     targetWeek = week;
                 }
@@ -382,21 +408,27 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${week}</td>
-                    <td>$${weekStartBalance.toFixed(2)}</td>
+                    <td>${weekStartBalance.toFixed(2)}</td>
                     <td>${currentLotSize.toFixed(2)}</td>
                     <td>${tradesPerWeek}</td>
                     <td>${wins}</td>
                     <td>${losses}</td>
-                    <td class="${weeklyPnL >= 0 ? 'profit' : 'loss'}">$${weeklyPnL.toFixed(2)}</td>
-                    <td>$${currentBalance.toFixed(2)}</td>
-                    <td class="${(currentBalance - startingCapital) >= 0 ? 'profit' : 'loss'}">$${(currentBalance - startingCapital).toFixed(2)}</td>
+                    <td class="${weeklyPnL >= 0 ? 'profit' : 'loss'}">${weeklyPnL.toFixed(2)}</td>
+                    <td class="profit">${compoundedAmount.toFixed(2)}</td>
+                    <td class="profit">${withdrawnAmount.toFixed(2)}</td>
+                    <td>${currentBalance.toFixed(2)}</td>
                 `;
                 tableBody.appendChild(row);
+                
+                // Break if balance goes too low
+                if (currentBalance <= 0) {
+                    break;
+                }
             }
 
             // Update summary cards
-            document.getElementById('finalBalance').textContent = `$${currentBalance.toFixed(2)}`;
-            document.getElementById('totalProfit').textContent = `$${(currentBalance - startingCapital).toFixed(2)}`;
+            document.getElementById('finalBalance').textContent = `${currentBalance.toFixed(2)}`;
+            document.getElementById('totalWithdrawn').textContent = `${totalWithdrawn.toFixed(2)}`;
             document.getElementById('timeToTarget').textContent = targetReached ? `${targetWeek} weeks` : 'Not reached';
             document.getElementById('totalTrades').textContent = totalTrades;
 
