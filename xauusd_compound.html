@@ -263,10 +263,6 @@
                     </select>
                 </div>
                 <div class="control-item">
-                    <label>Trades Per Week</label>
-                    <input type="number" id="tradesPerWeek" value="8" min="1" max="20">
-                </div>
-                <div class="control-item">
                     <label>Compounding (%)</label>
                     <input type="number" id="compounding" value="50" min="0" max="100">
                 </div>
@@ -274,11 +270,19 @@
                     <label>Target Profit ($)</label>
                     <input type="number" id="targetProfit" value="100000" min="1000">
                 </div>
+                <div class="control-item">
+                    <label>Trades Per Week</label>
+                    <input type="number" id="tradesPerWeek" value="8" min="1" max="20">
+                </div>
             </div>
             <div class="compounding-info">
                 <strong>Compounding Explanation:</strong> This percentage determines how much of your weekly profits get reinvested to increase your account balance. 
                 50% means half of your profits are reinvested for compound growth, while the other half can be withdrawn. 
                 100% = full reinvestment, 0% = no compounding (fixed balance).
+            </div>
+            <div class="compounding-info">
+                <strong>Pip Calculation:</strong> Stop Loss: <span id="stopLossDisplay">40</span> pips | Take Profit: <span id="takeProfitPips">80</span> pips | 
+                Pip Gain per Win: <span id="pipGainPerWin">80</span> pips | Pip Loss per Loss: <span id="pipLossPerLoss">40</span> pips
             </div>
             <button class="calculate-btn" onclick="calculateCompounding()">Calculate Compounding Table</button>
         </div>
@@ -339,6 +343,7 @@
             const tradesPerWeek = parseInt(document.getElementById('tradesPerWeek').value);
             const compounding = parseFloat(document.getElementById('compounding').value) / 100;
             const targetProfit = parseFloat(document.getElementById('targetProfit').value);
+            const stopLossPips = parseFloat(document.getElementById('stopLossPips').value);
 
             let currentBalance = startingCapital;
             let currentLotSize = startingLotSize;
@@ -353,6 +358,13 @@
             // Gold contract specifications
             const contractSize = 100; // 100 oz per standard lot
             const pointValue = 1; // $1 per point movement per standard lot
+            const takeProfitPips = stopLossPips * rrRatio; // Take profit based on R:R ratio
+            
+            // Update pip display
+            document.getElementById('stopLossDisplay').textContent = stopLossPips;
+            document.getElementById('takeProfitPips').textContent = takeProfitPips;
+            document.getElementById('pipGainPerWin').textContent = takeProfitPips;
+            document.getElementById('pipLossPerLoss').textContent = stopLossPips;
 
             for (let week = 1; week <= 52; week++) {
                 const weekStartBalance = currentBalance;
@@ -365,8 +377,7 @@
                 // Calculate risk amount per trade based on current balance
                 const riskAmount = currentBalance * riskPerTrade;
                 
-                // Calculate lot size based on risk (assuming 100 pip stop loss)
-                const stopLossPips = 100;
+                // Calculate lot size based on risk (using the configurable stop loss)
                 const riskPerPip = riskAmount / stopLossPips;
                 const calculatedLotSize = riskPerPip / (pointValue * contractSize);
                 
