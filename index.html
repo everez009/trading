@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repository Files</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #0d1117;
+            color: #e6edf3;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .repo-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .repo-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #58a6ff;
+        }
+
+        .branch-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 8px;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .file-list {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .file-list-header {
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            padding: 8px 16px;
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            font-size: 12px;
+            color: #7d8590;
+            font-weight: 600;
+        }
+
+        .file-item {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            align-items: center;
+            padding: 8px 16px;
+            border-bottom: 1px solid #21262d;
+            transition: background-color 0.2s;
+        }
+
+        .file-item:hover {
+            background-color: #161b22;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .file-icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .file-name {
+            color: #58a6ff;
+            text-decoration: none;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-name:hover {
+            text-decoration: underline;
+        }
+
+        .folder-name {
+            color: #58a6ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .folder-name:hover {
+            text-decoration: underline;
+        }
+
+        .commit-message {
+            color: #7d8590;
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 300px;
+        }
+
+        .commit-date {
+            color: #7d8590;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .readme-section {
+            margin-top: 24px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+        }
+
+        .readme-header {
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .readme-content {
+            padding: 16px;
+            color: #e6edf3;
+        }
+
+        .stats {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #7d8590;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="repo-info">
+                <span class="repo-name">📁 my-awesome-project</span>
+                <span class="branch-selector">
+                    🌿 main
+                </span>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <span>📊 24 commits</span>
+                </div>
+                <div class="stat-item">
+                    <span>🌟 5 stars</span>
+                </div>
+                <div class="stat-item">
+                    <span>🍴 2 forks</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="file-list">
+            <div class="file-list-header">
+                <div>Name</div>
+                <div>Last commit message</div>
+                <div>Last commit date</div>
+            </div>
+
+            <div class="file-item">
+                <div class="file-info">
+                    <span class="file-icon">📁</span>
+                    <a href="#" class="folder-name">.github</a>
+                </div>
+                <div class="commit-message">Add CI/CD workflows</div>
+                <div class="commit-date">2 days ago</div>
+            </div>
+
+            <div class="file-item">
+                <div class="file-info">
+                    <span class="file-icon">📁</span>
+                    <a href="#" class="folder-name">src</a>
+                </div>
+                <div class="commit-message">Refactor main components</div>
+                <div class="commit-date">1 day ago</div>
+            </div>
+
+            <div class="file-item">
+                <div class="file-info">
+                    <span class="file-icon">📁</span>
+                    <a href="#" class="folder-name">docs</a>
+                </div>
+                <div class="commit-message">Update documentation</div>
+                <div class="commit-date">3 days ago</div>
+            </div>
+
+            <div class="file-item">
+                <div class="file-info">
+                    <span class="file-icon">📁</span>
+                    <a href="#" class="folder-name">tests</a>
+                </div>
+                <div class="commit-message">Add unit tests for core functions</div>
+                <div class="commit-date">1 week ago</div>
+            </div>
+
+            <div class="file-item">
+                <div class="file-info">
+                    <span class="file-icon">📄</span>
+                    <a href="#" class="file-name">.gitignore</a>
+                </div>
+                <div class="commit-message">Update gitignore patterns</div>
+                <div class="commit-date">2 weeks ago</div>
+            </div>
+
+            <div class="file-item">
+                <div class="file-info">
+                    <span class="file-icon">📄</span>
+                    <a href="#" class="file-name">LICENSE</a>
+                </div>
+                <div class="commit-message">Add MIT license</div>
+                <div class="commit-date">1 month ago</div>
+            </div>
+
+            <div class="file-item">
+                <div class="file-info">
+                    <span class="file-icon">📦</span>
+                    <a href="#" class="file-name">package.json</a>
+                </div>
+                <div class="commit-message">Update dependencies</div>
+                <div class="commit-date">5 days ago</div>
+            </div>
+
+            <div class="file-item">
+                <div class="file-info">
+                    <span class="file-icon">📋</span>
+                    <a href="#" class="file-name">README.md</a>
+                </div>
+                <div class="commit-message">Update project description</div>
+                <div class="commit-date">6 hours ago</div>
+            </div>
+
+            <div class="file-item">
+                <div class="file-info">
+                    <span class="file-icon">⚙️</span>
+                    <a href="#" class="file-name">webpack.config.js</a>
+                </div>
+                <div class="commit-message">Optimize build configuration</div>
+                <div class="commit-date">1 week ago</div>
+            </div>
+
+            <div class="file-item">
+                <div class="file-info">
+                    <span class="file-icon">🔧</span>
+                    <a href="#" class="file-name">yarn.lock</a>
+                </div>
+                <div class="commit-message">Lock file update</div>
+                <div class="commit-date">5 days ago</div>
+            </div>
+        </div>
+
+        <div class="readme-section">
+            <div class="readme-header">
+                <span class="file-icon">📋</span>
+                <span>README.md</span>
+            </div>
+            <div class="readme-content">
+                <h1>My Awesome Project</h1>
+                <p>This is a sample project that demonstrates a modern web application with clean architecture and best practices.</p>
+                
+                <h2>Features</h2>
+                <ul>
+                    <li>Modern JavaScript ES6+ syntax</li>
+                    <li>Responsive design</li>
+                    <li>Comprehensive testing suite</li>
+                    <li>CI/CD integration</li>
+                </ul>
+
+                <h2>Getting Started</h2>
+                <p>To get started with this project:</p>
+                <pre><code>npm install
+npm start</code></pre>
+
+                <h2>Contributing</h2>
+                <p>Contributions are welcome! Please read our contributing guidelines before submitting pull requests.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactivity
+        document.querySelectorAll('.file-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (e.target.tagName !== 'A') {
+                    const link = this.querySelector('a');
+                    if (link) {
+                        console.log('Navigating to:', link.textContent);
+                        // In a real implementation, this would navigate to the file/folder
+                    }
+                }
+            });
+        });
+
+        // Simulate file type detection
+        document.querySelectorAll('.file-name').forEach(link => {
+            const fileName = link.textContent;
+            const icon = link.parentElement.querySelector('.file-icon');
+            
+            if (fileName.endsWith('.js')) {
+                icon.textContent = '📜';
+            } else if (fileName.endsWith('.json')) {
+                icon.textContent = '📦';
+            } else if (fileName.endsWith('.md')) {
+                icon.textContent = '📋';
+            } else if (fileName.endsWith('.css')) {
+                icon.textContent = '🎨';
+            } else if (fileName.endsWith('.html')) {
+                icon.textContent = '🌐';
+            } else if (fileName.includes('config')) {
+                icon.textContent = '⚙️';
+            } else if (fileName.includes('lock')) {
+                icon.textContent = '🔧';
+            }
+        });
+    </script>
+</body>
+</html>
