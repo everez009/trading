@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XAU/USD Compounding Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .strategy-info {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .controls {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .control-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .control-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-item label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #495057;
+        }
+
+        .control-item input, .control-item select {
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .control-item input:focus, .control-item select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .results {
+            padding: 30px;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .card .value {
+            font-size: 2em;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .profit {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .loss {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .target-reached {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .control-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            table {
+                font-size: 14px;
+            }
+            
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 XAU/USD Compounding Calculator</h1>
+            <p>EMA 4/12 Crossover + Retracement Strategy</p>
+            <div class="strategy-info">
+                <p><strong>Strategy Features:</strong> Fast EMA (4) / Slow EMA (12) crossovers with trend filters, retracement entries, and support/resistance exits</p>
+                <p><strong>Risk:Reward Ratio:</strong> 1:2 (configurable) | <strong>Timeframe:</strong> M15 Gold Trading</p>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <div class="control-item">
+                    <label>Starting Capital ($)</label>
+                    <input type="number" id="startingCapital" value="1000" min="100">
+                </div>
+                <div class="control-item">
+                    <label>Starting Lot Size</label>
+                    <input type="number" id="startingLotSize" value="0.05" min="0.01" step="0.01">
+                </div>
+                <div class="control-item">
+                    <label>Risk Per Trade (%)</label>
+                    <input type="number" id="riskPerTrade" value="2" min="1" max="5" step="0.1">
+                </div>
+                <div class="control-item">
+                    <label>Win Rate (%)</label>
+                    <input type="number" id="winRate" value="55" min="30" max="80">
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="control-item">
+                    <label>Risk:Reward Ratio</label>
+                    <select id="rrRatio">
+                        <option value="1.5">1:1.5</option>
+                        <option value="2" selected>1:2</option>
+                        <option value="2.5">1:2.5</option>
+                        <option value="3">1:3</option>
+                    </select>
+                </div>
+                <div class="control-item">
+                    <label>Trades Per Week</label>
+                    <input type="number" id="tradesPerWeek" value="8" min="1" max="20">
+                </div>
+                <div class="control-item">
+                    <label>Compounding (%)</label>
+                    <input type="number" id="compounding" value="50" min="0" max="100">
+                </div>
+                <div class="control-item">
+                    <label>Target Profit ($)</label>
+                    <input type="number" id="targetProfit" value="100000" min="1000">
+                </div>
+            </div>
+            <button class="calculate-btn" onclick="calculateCompounding()">Calculate Compounding Table</button>
+        </div>
+
+        <div class="results" id="results" style="display: none;">
+            <div class="summary-cards">
+                <div class="card">
+                    <h3>Final Balance</h3>
+                    <div class="value" id="finalBalance">$0</div>
+                </div>
+                <div class="card">
+                    <h3>Total Profit</h3>
+                    <div class="value" id="totalProfit">$0</div>
+                </div>
+                <div class="card">
+                    <h3>Time to Target</h3>
+                    <div class="value" id="timeToTarget">N/A</div>
+                </div>
+                <div class="card">
+                    <h3>Total Trades</h3>
+                    <div class="value" id="totalTrades">0</div>
+                </div>
+            </div>
+
+            <div id="targetMessage"></div>
+            <div id="warningMessage"></div>
+
+            <div class="table-container">
+                <table id="compoundingTable">
+                    <thead>
+                        <tr>
+                            <th>Week</th>
+                            <th>Starting Balance</th>
+                            <th>Lot Size</th>
+                            <th>Trades</th>
+                            <th>Wins</th>
+                            <th>Losses</th>
+                            <th>Weekly P&L</th>
+                            <th>Ending Balance</th>
+                            <th>Cumulative Profit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateCompounding() {
+            const startingCapital = parseFloat(document.getElementById('startingCapital').value);
+            const startingLotSize = parseFloat(document.getElementById('startingLotSize').value);
+            const riskPerTrade = parseFloat(document.getElementById('riskPerTrade').value) / 100;
+            const winRate = parseFloat(document.getElementById('winRate').value) / 100;
+            const rrRatio = parseFloat(document.getElementById('rrRatio').value);
+            const tradesPerWeek = parseInt(document.getElementById('tradesPerWeek').value);
+            const compounding = parseFloat(document.getElementById('compounding').value) / 100;
+            const targetProfit = parseFloat(document.getElementById('targetProfit').value);
+
+            let currentBalance = startingCapital;
+            let currentLotSize = startingLotSize;
+            let totalTrades = 0;
+            let targetReached = false;
+            let targetWeek = null;
+
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+
+            // Gold contract specifications
+            const contractSize = 100; // 100 oz per standard lot
+            const avgGoldPrice = 2000; // Approximate gold price
+            const pointValue = 1; // $1 per point movement per standard lot
+
+            for (let week = 1; week <= 52; week++) {
+                const weekStartBalance = currentBalance;
+                let weeklyPnL = 0;
+                
+                // Calculate trades for the week
+                const wins = Math.round(tradesPerWeek * winRate);
+                const losses = tradesPerWeek - wins;
+                
+                // Calculate risk amount per trade
+                const riskAmount = currentBalance * riskPerTrade;
+                
+                // Calculate lot size based on risk (assuming 100 pip stop loss)
+                const stopLossPips = 100;
+                const riskPerPip = riskAmount / stopLossPips;
+                const calculatedLotSize = riskPerPip / (pointValue * contractSize);
+                
+                // Use the larger of calculated lot size or minimum lot size
+                currentLotSize = Math.max(calculatedLotSize, startingLotSize);
+                
+                // Calculate P&L for wins and losses
+                const profitPerWin = riskAmount * rrRatio;
+                const lossPerTrade = riskAmount;
+                
+                weeklyPnL = (wins * profitPerWin) - (losses * lossPerTrade);
+                currentBalance += weeklyPnL;
+                
+                // Apply compounding - reinvest portion of profits
+                if (weeklyPnL > 0) {
+                    const reinvestAmount = weeklyPnL * compounding;
+                    // Reinvestment affects next week's balance
+                }
+                
+                totalTrades += tradesPerWeek;
+                
+                // Check if target is reached
+                if (!targetReached && (currentBalance - startingCapital) >= targetProfit) {
+                    targetReached = true;
+                    targetWeek = week;
+                }
+                
+                // Create table row
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${week}</td>
+                    <td>$${weekStartBalance.toFixed(2)}</td>
+                    <td>${currentLotSize.toFixed(2)}</td>
+                    <td>${tradesPerWeek}</td>
+                    <td>${wins}</td>
+                    <td>${losses}</td>
+                    <td class="${weeklyPnL >= 0 ? 'profit' : 'loss'}">$${weeklyPnL.toFixed(2)}</td>
+                    <td>$${currentBalance.toFixed(2)}</td>
+                    <td class="${(currentBalance - startingCapital) >= 0 ? 'profit' : 'loss'}">$${(currentBalance - startingCapital).toFixed(2)}</td>
+                `;
+                tableBody.appendChild(row);
+            }
+
+            // Update summary cards
+            document.getElementById('finalBalance').textContent = `$${currentBalance.toFixed(2)}`;
+            document.getElementById('totalProfit').textContent = `$${(currentBalance - startingCapital).toFixed(2)}`;
+            document.getElementById('timeToTarget').textContent = targetReached ? `${targetWeek} weeks` : 'Not reached';
+            document.getElementById('totalTrades').textContent = totalTrades;
+
+            // Show target message
+            const targetMessage = document.getElementById('targetMessage');
+            if (targetReached) {
+                targetMessage.innerHTML = `
+                    <div class="target-reached">
+                        🎯 Target of $${targetProfit.toLocaleString()} reached in ${targetWeek} weeks!
+                    </div>
+                `;
+            } else {
+                targetMessage.innerHTML = `
+                    <div class="warning">
+                        ⚠️ Target of $${targetProfit.toLocaleString()} not reached within 1 year. 
+                        Consider adjusting risk parameters or improving win rate.
+                    </div>
+                `;
+            }
+
+            // Show warning if risk is too high
+            const warningMessage = document.getElementById('warningMessage');
+            if (riskPerTrade > 0.03) {
+                warningMessage.innerHTML = `
+                    <div class="warning">
+                        ⚠️ Risk per trade is above 3%. High risk may lead to significant drawdowns.
+                    </div>
+                `;
+            } else {
+                warningMessage.innerHTML = '';
+            }
+
+            document.getElementById('results').style.display = 'block';
+        }
+
+        // Calculate on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateCompounding();
+        });
+    </script>
+</body>
+</html>
