@@ -2309,7 +2309,7 @@ if (savedTrades) {
       supabase = createClient(url, key);
 
       // Test connection: try to list tables or query a simple table
-      const { data, error } = await supabase.from('your_table_name').select('*').limit(1);
+      const { data, error } = await supabase.from('xauusd_trades').select('*').limit(1);
 
       if (error) {
         throw error;
