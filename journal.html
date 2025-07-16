@@ -1332,7 +1332,14 @@
                     maxDrawdown = drawdown;
                 }
             });
-            
+            // Save to localStorage
+localStorage.setItem('trades', JSON.stringify(trades));
+
+// Load from localStorage
+const savedTrades = localStorage.getItem('trades');
+if (savedTrades) {
+    trades = JSON.parse(savedTrades);
+}
             document.getElementById('avgWin').textContent = `${avgWin.toFixed(2)}`;
             document.getElementById('avgLoss').textContent = `${avgLoss.toFixed(2)}`;
             document.getElementById('profitFactor').textContent = profitFactor.toFixed(2);
