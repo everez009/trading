@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DWR Falcon Trading Journal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.1) 10px,
+                rgba(255,255,255,0.1) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+
+        @keyframes slide {
+            0% { transform: translateX(-50px); }
+            100% { transform: translateX(0px); }
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .controls {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .table-container {
+            padding: 30px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            padding: 18px 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+        }
+
+        th::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3498db, #e74c3c, #27ae60);
+        }
+
+        td {
+            padding: 15px 12px;
+            text-align: center;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 14px;
+            position: relative;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: #e3f2fd;
+            transform: scale(1.01);
+            transition: all 0.3s ease;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #bdc3c7;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .profit-positive {
+            background: linear-gradient(135deg, #d5f4e6, #a8e6cf);
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .profit-negative {
+            background: linear-gradient(135deg, #fadbd8, #f1948a);
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .stats {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 5px;
+        }
+
+        .falcon-icon {
+            display: inline-block;
+            margin-left: 10px;
+            font-size: 2rem;
+            animation: soar 3s ease-in-out infinite;
+        }
+
+        @keyframes soar {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .table-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DWR FALCON <span class="falcon-icon">🦅</span></h1>
+            <div class="subtitle">Professional Trading Journal</div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="addTrade()">Add New Trade</button>
+            <button class="btn btn-success" onclick="exportData()">Export Data</button>
+            <button class="btn btn-danger" onclick="clearAll()">Clear All</button>
+            <span style="margin-left: auto; color: #7f8c8d; font-weight: 600;">Total Trades: <span id="tradeCount">0</span></span>
+        </div>
+
+        <div class="table-container">
+            <table id="tradingTable">
+                <thead>
+                    <tr>
+                        <th>Currency Pair</th>
+                        <th>Date</th>
+                        <th>WP/Ch Colour</th>
+                        <th>Trade Direction</th>
+                        <th>Bounce Point</th>
+                        <th>Type of Bar</th>
+                        <th>EP</th>
+                        <th>SL</th>
+                        <th>Profit in Pips</th>
+                        <th>Exit Price</th>
+                        <th>P/L %</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tradesBody">
+                    <!-- Sample row -->
+                    <tr>
+                        <td><input type="text" placeholder="EUR/USD" value="EUR/USD"></td>
+                        <td><input type="date" value="2025-06-16"></td>
+                        <td>
+                            <select>
+                                <option value="">Select</option>
+                                <option value="Red">Red</option>
+                                <option value="Green">Green</option>
+                                <option value="Blue">Blue</option>
+                                <option value="Yellow">Yellow</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select>
+                                <option value="">Select</option>
+                                <option value="Long">Long</option>
+                                <option value="Short">Short</option>
+                            </select>
+                        </td>
+                        <td><input type="text" placeholder="1.0850"></td>
+                        <td>
+                            <select>
+                                <option value="">Select</option>
+                                <option value="Doji">Doji</option>
+                                <option value="Hammer">Hammer</option>
+                                <option value="Engulfing">Engulfing</option>
+                                <option value="Pin Bar">Pin Bar</option>
+                                <option value="Inside Bar">Inside Bar</option>
+                            </select>
+                        </td>
+                        <td><input type="number" step="0.00001" placeholder="1.0850"></td>
+                        <td><input type="number" step="0.00001" placeholder="1.0800"></td>
+                        <td><input type="number" step="0.1" placeholder="25.0" oninput="updatePL(this)"></td>
+                        <td><input type="number" step="0.00001" placeholder="1.0875"></td>
+                        <td class="pl-cell"><input type="number" step="0.01" placeholder="2.5" oninput="updatePLColor(this)"></td>
+                        <td><button class="btn btn-danger" onclick="deleteRow(this)" style="padding: 5px 10px; font-size: 12px;">Delete</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalTrades">1</div>
+                <div class="stat-label">Total Trades</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="winRate">0%</div>
+                <div class="stat-label">Win Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalPips">0</div>
+                <div class="stat-label">Total Pips</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avgPL">0%</div>
+                <div class="stat-label">Avg P/L %</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function addTrade() {
+            const tbody = document.getElementById('tradesBody');
+            const newRow = document.createElement('tr');
+            
+            newRow.innerHTML = `
+                <td><input type="text" placeholder="EUR/USD"></td>
+                <td><input type="date" value="${new Date().toISOString().split('T')[0]}"></td>
+                <td>
+                    <select>
+                        <option value="">Select</option>
+                        <option value="Red">Red</option>
+                        <option value="Green">Green</option>
+                        <option value="Blue">Blue</option>
+                        <option value="Yellow">Yellow</option>
+                    </select>
+                </td>
+                <td>
+                    <select>
+                        <option value="">Select</option>
+                        <option value="Long">Long</option>
+                        <option value="Short">Short</option>
+                    </select>
+                </td>
+                <td><input type="text" placeholder="1.0850"></td>
+                <td>
+                    <select>
+                        <option value="">Select</option>
+                        <option value="Doji">Doji</option>
+                        <option value="Hammer">Hammer</option>
+                        <option value="Engulfing">Engulfing</option>
+                        <option value="Pin Bar">Pin Bar</option>
+                        <option value="Inside Bar">Inside Bar</option>
+                    </select>
+                </td>
+                <td><input type="number" step="0.00001" placeholder="1.0850"></td>
+                <td><input type="number" step="0.00001" placeholder="1.0800"></td>
+                <td><input type="number" step="0.1" placeholder="25.0" oninput="updatePL(this)"></td>
+                <td><input type="number" step="0.00001" placeholder="1.0875"></td>
+                <td class="pl-cell"><input type="number" step="0.01" placeholder="2.5" oninput="updatePLColor(this)"></td>
+                <td><button class="btn btn-danger" onclick="deleteRow(this)" style="padding: 5px 10px; font-size: 12px;">Delete</button></td>
+            `;
+            
+            tbody.appendChild(newRow);
+            updateStats();
+        }
+
+        function deleteRow(button) {
+            if (confirm('Are you sure you want to delete this trade?')) {
+                button.closest('tr').remove();
+                updateStats();
+            }
+        }
+
+        function updatePLColor(input) {
+            const value = parseFloat(input.value);
+            const cell = input.closest('td');
+            
+            cell.classList.remove('profit-positive', 'profit-negative');
+            
+            if (value > 0) {
+                cell.classList.add('profit-positive');
+            } else if (value < 0) {
+                cell.classList.add('profit-negative');
+            }
+            
+            updateStats();
+        }
+
+        function updateStats() {
+            const rows = document.querySelectorAll('#tradesBody tr');
+            const totalTrades = rows.length;
+            
+            let totalPips = 0;
+            let totalPL = 0;
+            let winningTrades = 0;
+            
+            rows.forEach(row => {
+                const pipsInput = row.querySelector('td:nth-child(9) input');
+                const plInput = row.querySelector('td:nth-child(11) input');
+                
+                const pips = parseFloat(pipsInput.value) || 0;
+                const pl = parseFloat(plInput.value) || 0;
+                
+                totalPips += pips;
+                totalPL += pl;
+                
+                if (pl > 0) winningTrades++;
+            });
+            
+            const winRate = totalTrades > 0 ? ((winningTrades / totalTrades) * 100).toFixed(1) : 0;
+            const avgPL = totalTrades > 0 ? (totalPL / totalTrades).toFixed(2) : 0;
+            
+            document.getElementById('totalTrades').textContent = totalTrades;
+            document.getElementById('winRate').textContent = winRate + '%';
+            document.getElementById('totalPips').textContent = totalPips.toFixed(1);
+            document.getElementById('avgPL').textContent = avgPL + '%';
+            document.getElementById('tradeCount').textContent = totalTrades;
+        }
+
+        function exportData() {
+            const table = document.getElementById('tradingTable');
+            const rows = table.querySelectorAll('tr');
+            let csvContent = '';
+            
+            // Headers
+            const headers = ['Currency Pair', 'Date', 'WP/Ch Colour', 'Trade Direction', 'Bounce Point', 'Type of Bar', 'EP', 'SL', 'Profit in Pips', 'Exit Price', 'P/L %'];
+            csvContent += headers.join(',') + '\n';
+            
+            // Data rows
+            rows.forEach((row, index) => {
+                if (index === 0) return; // Skip header row
+                
+                const inputs = row.querySelectorAll('input, select');
+                const rowData = [];
+                
+                inputs.forEach(input => {
+                    rowData.push(input.value || '');
+                });
+                
+                // Remove the last element (delete button)
+                rowData.pop();
+                
+                csvContent += rowData.join(',') + '\n';
+            });
+            
+            // Download CSV
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'DWR_Falcon_Trading_Journal.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function clearAll() {
+            if (confirm('Are you sure you want to clear all trades? This action cannot be undone.')) {
+                document.getElementById('tradesBody').innerHTML = '';
+                addTrade(); // Add one empty row
+                updateStats();
+            }
+        }
+
+        // Initialize stats on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            
+            // Update P/L colors for existing data
+            document.querySelectorAll('.pl-cell input').forEach(input => {
+                if (input.value) {
+                    updatePLColor(input);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
