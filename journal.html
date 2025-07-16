@@ -2287,3 +2287,61 @@ if (savedTrades) {
     </script>
 </body>
 </html>
+<!-- Add this at the end of your journal.html -->
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+  let supabase = null;
+
+  async function connectDatabase() {
+    const url = document.getElementById('supabaseUrl').value.trim();
+    const key = document.getElementById('supabaseKey').value.trim();
+    const dbStatus = document.getElementById('dbStatus');
+    const dbAlert = document.getElementById('dbAlert');
+
+    if (!url || !key) {
+      dbAlert.innerHTML = '<div class="alert alert-error">❌ Please enter both Supabase URL and Anon Key.</div>';
+      return;
+    }
+
+    // Show loading
+    dbStatus.className = 'db-status db-loading';
+    dbStatus.innerHTML = '<span class="loading-spinner"></span> Connecting...';
+
+    try {
+      supabase = createClient(url, key);
+
+      // Test connection: try to list tables or query a simple table
+      const { data, error } = await supabase.from('your_table_name').select('*').limit(1);
+
+      if (error) {
+        throw error;
+      }
+
+      dbStatus.className = 'db-status db-connected';
+      dbStatus.innerHTML = '✅ Connected';
+      dbAlert.innerHTML = '<div class="alert alert-success">✅ Successfully connected to Supabase!</div>';
+    } catch (err) {
+      console.error(err);
+      dbStatus.className = 'db-status db-disconnected';
+      dbStatus.innerHTML = '❌ Disconnected';
+      dbAlert.innerHTML = `<div class="alert alert-error">❌ Connection failed: ${err.message}</div>`;
+    }
+  }
+
+  // Attach to global scope so your HTML buttons work
+  window.connectDatabase = connectDatabase;
+
+  // You can add your initializeDatabase() function here too
+  window.initializeDatabase = async function () {
+    if (!supabase) {
+      alert('Please connect to Supabase first.');
+      return;
+    }
+
+    // Example: create a table using SQL (requires PostgREST RPC or your own backend)
+    // Or show a message: “Initialize manually from Supabase Studio.”
+    alert('You must manually set up your tables in Supabase Studio or via migration scripts.');
+  };
+</script>
+
