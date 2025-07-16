@@ -263,6 +263,10 @@
                     </select>
                 </div>
                 <div class="control-item">
+                    <label>Stop Loss (pips)</label>
+                    <input type="number" id="stopLossPips" value="40" min="10" max="200">
+                </div>
+                <div class="control-item">
                     <label>Compounding (%)</label>
                     <input type="number" id="compounding" value="50" min="0" max="100">
                 </div>
@@ -270,6 +274,8 @@
                     <label>Target Profit ($)</label>
                     <input type="number" id="targetProfit" value="100000" min="1000">
                 </div>
+            </div>
+            <div class="control-group">
                 <div class="control-item">
                     <label>Trades Per Week</label>
                     <input type="number" id="tradesPerWeek" value="8" min="1" max="20">
@@ -419,15 +425,15 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${week}</td>
-                    <td>${weekStartBalance.toFixed(2)}</td>
+                    <td>$${weekStartBalance.toFixed(2)}</td>
                     <td>${currentLotSize.toFixed(2)}</td>
                     <td>${tradesPerWeek}</td>
                     <td>${wins}</td>
                     <td>${losses}</td>
-                    <td class="${weeklyPnL >= 0 ? 'profit' : 'loss'}">${weeklyPnL.toFixed(2)}</td>
-                    <td class="profit">${compoundedAmount.toFixed(2)}</td>
-                    <td class="profit">${withdrawnAmount.toFixed(2)}</td>
-                    <td>${currentBalance.toFixed(2)}</td>
+                    <td class="${weeklyPnL >= 0 ? 'profit' : 'loss'}">$${weeklyPnL.toFixed(2)}</td>
+                    <td class="profit">$${compoundedAmount.toFixed(2)}</td>
+                    <td class="profit">$${withdrawnAmount.toFixed(2)}</td>
+                    <td>$${currentBalance.toFixed(2)}</td>
                 `;
                 tableBody.appendChild(row);
                 
@@ -438,8 +444,8 @@
             }
 
             // Update summary cards
-            document.getElementById('finalBalance').textContent = `${currentBalance.toFixed(2)}`;
-            document.getElementById('totalWithdrawn').textContent = `${totalWithdrawn.toFixed(2)}`;
+            document.getElementById('finalBalance').textContent = `$${currentBalance.toFixed(2)}`;
+            document.getElementById('totalWithdrawn').textContent = `$${totalWithdrawn.toFixed(2)}`;
             document.getElementById('timeToTarget').textContent = targetReached ? `${targetWeek} weeks` : 'Not reached';
             document.getElementById('totalTrades').textContent = totalTrades;
 
@@ -475,8 +481,22 @@
             document.getElementById('results').style.display = 'block';
         }
 
-        // Calculate on page load
+        // Update pip calculations when inputs change
+        function updatePipDisplays() {
+            const stopLossPips = parseFloat(document.getElementById('stopLossPips').value) || 40;
+            const rrRatio = parseFloat(document.getElementById('rrRatio').value) || 2;
+            const takeProfitPips = stopLossPips * rrRatio;
+            
+            document.getElementById('stopLossDisplay').textContent = stopLossPips;
+            document.getElementById('takeProfitPips').textContent = takeProfitPips;
+            document.getElementById('pipGainPerWin').textContent = takeProfitPips;
+            document.getElementById('pipLossPerLoss').textContent = stopLossPips;
+        }
+
+        // Add event listeners for real-time updates
         document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('stopLossPips').addEventListener('input', updatePipDisplays);
+            document.getElementById('rrRatio').addEventListener('change', updatePipDisplays);
             calculateCompounding();
         });
     </script>
