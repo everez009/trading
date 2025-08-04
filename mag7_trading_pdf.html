@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimized Settings for Mag 7 Stocks</title>
+    <style>
+        @media print {
+            @page {
+                margin: 0.75in;
+                size: A4;
+            }
+            
+            body {
+                font-family: 'Arial', sans-serif;
+                line-height: 1.4;
+                color: #333;
+                font-size: 11pt;
+                margin: 0;
+                padding: 0;
+            }
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            font-size: 24pt;
+            margin-bottom: 5px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #34495e;
+            font-size: 16pt;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+            padding-left: 10px;
+        }
+        
+        h3 {
+            color: #2c3e50;
+            font-size: 14pt;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        h4 {
+            color: #34495e;
+            font-size: 12pt;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 10pt;
+        }
+        
+        th, td {
+            border: 1px solid #bdc3c7;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .stock-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .section {
+            page-break-inside: avoid;
+            margin-bottom: 20px;
+        }
+        
+        .strategy-box {
+            background-color: #ecf0f1;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .entry-rules, .exit-rules {
+            background-color: #d5f4e6;
+            border-left: 4px solid #27ae60;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        
+        .avoid-rules {
+            background-color: #fadbd8;
+            border-left: 4px solid #e74c3c;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        
+        .example-box {
+            background-color: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .tips-box {
+            background-color: #e7f3ff;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        li {
+            margin: 5px 0;
+        }
+        
+        .checkmark {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .cross {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .print-button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14pt;
+            margin: 20px auto;
+            display: block;
+        }
+        
+        .print-button:hover {
+            background-color: #2980b9;
+        }
+        
+        @media print {
+            .print-button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="print-button" onclick="window.print()">🖨️ Print/Save as PDF</button>
+    
+    <h1>Optimized Settings for Mag 7 Stocks</h1>
+    
+    <div class="section">
+        <h2>1. Heikin Ashi Trend (HAT) Settings</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Stock</th>
+                    <th>T3 Factor</th>
+                    <th>Length</th>
+                    <th>Squeeze %</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="stock-name">AAPL</td>
+                    <td>0.25</td>
+                    <td>10</td>
+                    <td>0.15%</td>
+                    <td>Smooth trends, less noise</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">MSFT</td>
+                    <td>0.3</td>
+                    <td>12</td>
+                    <td>0.2%</td>
+                    <td>Strong trends, wider moves</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">AMZN</td>
+                    <td>0.35</td>
+                    <td>9</td>
+                    <td>0.25%</td>
+                    <td>High volatility</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">GOOGL</td>
+                    <td>0.2</td>
+                    <td>14</td>
+                    <td>0.1%</td>
+                    <td>Steady, less erratic</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">META</td>
+                    <td>0.3</td>
+                    <td>11</td>
+                    <td>0.18%</td>
+                    <td>Momentum-driven</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">NVDA</td>
+                    <td>0.4</td>
+                    <td>8</td>
+                    <td>0.3%</td>
+                    <td>Extreme volatility</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">TSLA</td>
+                    <td>0.5</td>
+                    <td>7</td>
+                    <td>0.35%</td>
+                    <td>Highly speculative</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="section">
+        <h2>2. Twin Range Filter (TRF) Settings</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Stock</th>
+                    <th>Fast Period</th>
+                    <th>Fast Mult</th>
+                    <th>Slow Period</th>
+                    <th>Slow Mult</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="stock-name">AAPL</td>
+                    <td>22</td>
+                    <td>1.6</td>
+                    <td>50</td>
+                    <td>1.8</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">MSFT</td>
+                    <td>20</td>
+                    <td>1.7</td>
+                    <td>45</td>
+                    <td>2.0</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">AMZN</td>
+                    <td>18</td>
+                    <td>1.8</td>
+                    <td>40</td>
+                    <td>2.2</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">GOOGL</td>
+                    <td>25</td>
+                    <td>1.5</td>
+                    <td>55</td>
+                    <td>1.7</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">META</td>
+                    <td>20</td>
+                    <td>1.9</td>
+                    <td>42</td>
+                    <td>2.1</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">NVDA</td>
+                    <td>15</td>
+                    <td>2.0</td>
+                    <td>35</td>
+                    <td>2.5</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">TSLA</td>
+                    <td>12</td>
+                    <td>2.2</td>
+                    <td>30</td>
+                    <td>3.0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="section">
+        <h2>3. VIDYA (Dynamic MA + Volume) Settings</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Stock</th>
+                    <th>Length</th>
+                    <th>Momentum</th>
+                    <th>Band Dist</th>
+                    <th>Pivot Bars</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="stock-name">AAPL</td>
+                    <td>12</td>
+                    <td>18</td>
+                    <td>1.5</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">MSFT</td>
+                    <td>14</td>
+                    <td>20</td>
+                    <td>1.6</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">AMZN</td>
+                    <td>10</td>
+                    <td>22</td>
+                    <td>2.0</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">GOOGL</td>
+                    <td>15</td>
+                    <td>16</td>
+                    <td>1.4</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">META</td>
+                    <td>13</td>
+                    <td>19</td>
+                    <td>1.8</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">NVDA</td>
+                    <td>8</td>
+                    <td>25</td>
+                    <td>2.5</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td class="stock-name">TSLA</td>
+                    <td>7</td>
+                    <td>30</td>
+                    <td>3.0</td>
+                    <td>1</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="section">
+        <h2>Key Adjustments for Mag 7 Stocks</h2>
+        <div class="strategy-box">
+            <h4>1. Higher Volatility Stocks (NVDA, TSLA, AMZN)</h4>
+            <ul>
+                <li>Use <strong>shorter lengths</strong> & <strong>higher multipliers</strong> (TRF Fast Mult = 2.0+)</li>
+                <li>Wider <strong>HAT squeeze %</strong> (0.3-0.35%) to avoid false signals</li>
+            </ul>
+            
+            <h4>2. Stable Giants (AAPL, MSFT, GOOGL)</h4>
+            <ul>
+                <li><strong>Smoother settings</strong> (longer HAT/TRF periods)</li>
+                <li>Tighter <strong>VIDYA bands</strong> (1.4-1.6x ATR)</li>
+            </ul>
+            
+            <h4>3. Momentum-Driven (META, NVDA, TSLA)</h4>
+            <ul>
+                <li>VIDYA <strong>momentum = 20+</strong> to catch sharp moves</li>
+                <li>Allow <strong>more pivots</strong> (2-3 bars) for swing entries</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>Best Timeframes for Mag 7 Stocks</h2>
+        <ul>
+            <li><strong>Day Trading:</strong> 15min - 1H (use tighter TRF bands)</li>
+            <li><strong>Swing Trading:</strong> 4H - Daily (best balance)</li>
+            <li><strong>Position Trading:</strong> Weekly (for long-term trends)</li>
+        </ul>
+    </div>
+    
+    <div class="section">
+        <h2>Trading Strategy for Mag 7</h2>
+        
+        <h3>Entry Rules (Aligned Signals)</h3>
+        <div class="entry-rules">
+            <p><span class="checkmark">✅</span> <strong>HAT</strong> → Confirms trend direction (green/red)</p>
+            <p><span class="checkmark">✅</span> <strong>TRF</strong> → Price breaks TRF line with volume</p>
+            <p><span class="checkmark">✅</span> <strong>VIDYA</strong> → Bands act as dynamic S/R</p>
+            <p><span class="checkmark">✅</span> <strong>Volume Delta</strong> > 10% (confirms institutional interest)</p>
+        </div>
+        
+        <h3>Exit Rules</h3>
+        <div class="exit-rules">
+            <ul>
+                <li><strong>Take Profit:</strong> At next VIDYA band (1.5-2x ATR)</li>
+                <li><strong>Stop Loss:</strong> Below TRF line (for longs) or above (for shorts)</li>
+            </ul>
+        </div>
+        
+        <h3>Avoid Trading If:</h3>
+        <div class="avoid-rules">
+            <p><span class="cross">❌</span> <strong>Earnings week</strong> (high false breakouts)</p>
+            <p><span class="cross">❌</span> <strong>Low volume</strong> (weak confirmation)</p>
+            <p><span class="cross">❌</span> <strong>Divergence between HAT & TRF</strong></p>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>Example: NVDA Trade Setup (High Volatility)</h2>
+        <div class="example-box">
+            <ol>
+                <li><strong>HAT</strong> → Bullish (green candles, squeeze < 0.3%)</li>
+                <li><strong>TRF</strong> → Price crosses above TRF (Fast Mult = 2.0)</li>
+                <li><strong>VIDYA</strong> → Lower band holds as support</li>
+                <li><strong>Volume</strong> → Delta > 15% (big money buying)</li>
+                <li><strong>Enter</strong> → At break of pivot high</li>
+                <li><strong>Exit</strong> → At upper VIDYA band (~2.5x ATR)</li>
+            </ol>
+        </div>
+    </div>
+    
+    <div class="section">
+        <h2>Final Tips</h2>
+        <div class="tips-box">
+            <ul>
+                <li><strong>Backtest</strong> settings on past 6-12 months of data</li>
+                <li><strong>Adjust TRF mults</strong> if too many whipsaws occur</li>
+                <li><strong>Combine with RSI >50/<50</strong> for extra confirmation</li>
+            </ul>
+            <p><strong>Note:</strong> These settings <strong>work best for swing trades (2-10 days)</strong>. For day trading, reduce HAT/TRF periods by <strong>30%</strong>. 🚀</p>
+        </div>
+    </div>
+</body>
+</html>
